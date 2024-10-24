@@ -10,6 +10,8 @@
 </head>
 <body>
 	<py-script>
+		from pyscript import fetch
+		data = await fetch("https://gamesbykk.github.io/PredictRandom/rand.txt").text()
 		import math
 		def isclose(x,y):
 			if math.floor(x/10) == math.floor(y//10)-1 or math.floor(x/10) == math.floor(y//10) or math.floor(x/10) == (math.floor(y//10)+1)%10:
