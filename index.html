@@ -14,8 +14,11 @@
         from = 'https://gamesbykk.github.io/PredictRandom/rand.txt'
     </py-config>
 	<py-script>
+    	import contextlib
 
-		print(data)
+        with contextlib.suppress(ImportError):
+            from pyscript import window
+            input = window.prompt
 		import math
 		def isclose(x,y):
 			if math.floor(x/10) == math.floor(y//10)-1 or math.floor(x/10) == math.floor(y//10) or math.floor(x/10) == (math.floor(y//10)+1)%10:
@@ -43,32 +46,8 @@
 				# Setup the model, data, loss function and optimizer
 				# Train the model
 				prediction = predict(data)
-				inps = input("Enter a number 1-100:")
-				print(f'Predicted next number: {prediction:.4f}')
-				f = open("rand.txt", "a")
-
-				f.write('\n')
-				f.write(inps)
-				f.close() 
-				data.append(int(inps))
-		run()
-	</py-script>
-</body>
-</html>
-						if data[i-1]==data[-1]:
-							probs[data[i+1]]+=2
-					else:
-						break
-			return max(probs, key=probs.get)
-		for i in range(len(data)):
-			data[i]=int(data[i])
-		def run():
-			while True:
-
-				# Setup the model, data, loss function and optimizer
-				# Train the model
-				prediction = predict(data)
-				inps = input("Enter a number 1-100:")
+				
+                text = input('Enter a number 1-100: ')
 				print(f'Predicted next number: {prediction:.4f}')
 				f = open("rand.txt", "a")
 
