@@ -10,7 +10,7 @@
 </head>
 <body>
 	<py-script>
-		from pyscript import fetch
+		from js import fetch
 		async def getdata():
 			data = await fetch("https://gamesbykk.github.io/PredictRandom/rand.txt").text().split('\n')
 			return data
