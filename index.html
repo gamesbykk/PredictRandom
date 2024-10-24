@@ -1,61 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictor</title>
+    <script>
+        // isclose function in JavaScript
+        function isclose(x, y) {
+            if (Math.floor(x / 10) === Math.floor(y / 10) - 1 || 
+                Math.floor(x / 10) === Math.floor(y / 10) || 
+                Math.floor(x / 10) === (Math.floor(y / 10) + 1) % 10) {
+                
+                if (Math.floor(x % 10) === Math.floor(y % 10) - 1 || 
+                    Math.floor(x % 10) === Math.floor(y % 10) || 
+                    Math.floor(x % 10) === (Math.floor(y % 10) + 1) % 10) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-	<link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
-	<script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+        // predict function in JavaScript
+        function predict(data) {
+            let probs = {};
+            for (let i = 0; i < 100; i++) {
+                probs[i] = 0;
+            }
 
-	<title>PyScript Demo</title>
+            for (let i = 10; i < data.length - 1; i++) {
+                for (let j = 0; j < 9; j++) {
+                    if (isclose(data[i - j], data[data.length - (j + 1)])) {
+                        probs[data[i + 1]] += 1;
+                        if (data[i - 1] === data[data.length - 1]) {
+                            probs[data[i + 1]] += 2;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+            
+            return Object.keys(probs).reduce((a, b) => probs[a] > probs[b] ? a : b);
+        }
+
+        // Read and update data from a local text area (mimicking file handling)
+        let data = [];
+        
+        function loadData() {
+            const inputData = document.getElementById('data').value.trim().split('\n');
+            data = inputData.map(Number);
+        }
+
+        // Append new input to data
+        function appendData() {
+            const inputNumber = document.getElementById('input-number').value;
+            data.push(Number(inputNumber));
+            document.getElementById('data').value += `\n${inputNumber}`;
+        }
+
+        // Run prediction and update the display
+        function run() {
+            loadData();
+            const prediction = predict(data);
+            document.getElementById('prediction').textContent = `Predicted next number: ${prediction}`;
+        }
+    </script>
 </head>
 <body>
-    <py-config>
-        [[fetch]]
-        from = 'https://gamesbykk.github.io/PredictRandom/rand.txt'
-    </py-config>
-	<py-script>
-    	import contextlib
+    <h1>Number Predictor</h1>
 
-        with contextlib.suppress(ImportError):
-            from pyscript import window
-            input = window.prompt
-		import math
-		def isclose(x,y):
-			if math.floor(x/10) == math.floor(y//10)-1 or math.floor(x/10) == math.floor(y//10) or math.floor(x/10) == (math.floor(y//10)+1)%10:
-				if math.floor(x%10) == math.floor(y%10)-1 or math.floor(x%10) == math.floor(y%10) or math.floor(x%10) == (math.floor(y%10)+1)%10:
-					return True
-			
-		def predict(data):
-			probs=dict(zip(list(range(100)),[0 for _ in range(100)]))
-			for i in range(10,len(data)-1):
-				for j in range(9):
-					if isclose(data[i-j],data[-(j+1)]):
-						probs[data[i+1]]+=1
-						if data[i-1]==data[-1]:
-							probs[data[i+1]]+=2
-					else:
-						break
-			return max(probs, key=probs.get)
-		f = open("rand.txt", "r")
-        data = f.read().split('\n')
-        for i in range(len(data)):
-            data[i]=int(data[i])
-		def run():
-			while True:
+    <textarea id="data" rows="10" cols="30">10\n20\n30\n40\n50\n60\n70\n80\n90\n100</textarea>
+    <br><br>
 
-				# Setup the model, data, loss function and optimizer
-				# Train the model
-				prediction = predict(data)
-				
-                text = input('Enter a number 1-100: ')
-				print(f'Predicted next number: {prediction:.4f}')
-				f = open("rand.txt", "a")
+    <label for="input-number">Enter a number (1-100):</label>
+    <input type="number" id="input-number" min="1" max="100">
+    <button onclick="run(); appendData();">Submit and Predict</button>
 
-				f.write('\n')
-				f.write(inps)
-				f.close() 
-				data.append(int(inps))
-		run()
-	</py-script>
+    <h2 id="prediction">Predicted next number: </h2>
 </body>
 </html>
+
