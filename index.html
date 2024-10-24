@@ -15,6 +15,7 @@
 			data = await fetch("https://gamesbykk.github.io/PredictRandom/rand.txt").text().split('\n')
 			return data
 		data=getdata()
+		print(data)
 		import math
 		def isclose(x,y):
 			if math.floor(x/10) == math.floor(y//10)-1 or math.floor(x/10) == math.floor(y//10) or math.floor(x/10) == (math.floor(y//10)+1)%10:
