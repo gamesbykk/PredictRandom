@@ -11,7 +11,7 @@
 <body>
 	<py-script>
 		from pyscript import fetch
-		data = await fetch("https://gamesbykk.github.io/PredictRandom/rand.txt").text()
+		data = await fetch("https://gamesbykk.github.io/PredictRandom/rand.txt").text().split('\n')
 		import math
 		def isclose(x,y):
 			if math.floor(x/10) == math.floor(y//10)-1 or math.floor(x/10) == math.floor(y//10) or math.floor(x/10) == (math.floor(y//10)+1)%10:
@@ -29,8 +29,6 @@
 					else:
 						break
 			return max(probs, key=probs.get)
-		f = open("rand.txt", "r")
-		data = f.read().split('\n')
 		for i in range(len(data)):
 			data[i]=int(data[i])
 		def run():
