@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predictor</title>
+    <title>Predictor with File Handling</title>
     <script>
+        let data = [];
+
         // isclose function in JavaScript
         function isclose(x, y) {
             if (Math.floor(x / 10) === Math.floor(y / 10) - 1 || 
@@ -43,40 +45,67 @@
             return Object.keys(probs).reduce((a, b) => probs[a] > probs[b] ? a : b);
         }
 
-        // Read and update data from a local text area (mimicking file handling)
-        let data = [];
-        
-        function loadData() {
-            const inputData = document.getElementById('data').value.trim().split('\n');
-            data = inputData.map(Number);
+        // Function to handle file upload and load data
+        function loadFile(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const fileContent = e.target.result;
+                data = fileContent.trim().split('\n').map(Number);
+                document.getElementById('file-content').textContent = fileContent;
+            };
+
+            reader.readAsText(file);
         }
 
-        // Append new input to data
+        // Function to run prediction and update display
+        function run() {
+            const prediction = predict(data);
+            document.getElementById('prediction').textContent = `Predicted next number: ${prediction}`;
+        }
+
+        // Append new input to data and allow download of updated file
         function appendData() {
             const inputNumber = document.getElementById('input-number').value;
             data.push(Number(inputNumber));
-            document.getElementById('data').value += `\n${inputNumber}`;
-        }
 
-        // Run prediction and update the display
-        function run() {
-            loadData();
-            const prediction = predict(data);
-            document.getElementById('prediction').textContent = `Predicted next number: ${prediction}`;
+            // Display updated data in the textarea
+            document.getElementById('file-content').textContent += `\n${inputNumber}`;
+            
+            // Create a downloadable file with updated data
+            const updatedContent = data.join('\n');
+            const blob = new Blob([updatedContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const downloadLink = document.getElementById('download-link');
+            downloadLink.href = url;
+            downloadLink.download = 'rand.txt';
+            downloadLink.textContent = "Download updated rand.txt";
+            downloadLink.style.display = 'block';
         }
     </script>
 </head>
 <body>
-    <h1>Number Predictor</h1>
+    <h1>Number Predictor with File Handling</h1>
 
-    <textarea id="data" rows="10" cols="30">10\n20\n30\n40\n50\n60\n70\n80\n90\n100</textarea>
+    <!-- File Upload -->
+    <input type="file" id="file-input" accept=".txt" onchange="loadFile(event)">
     <br><br>
 
+    <!-- Display file content -->
+    <textarea id="file-content" rows="10" cols="30" readonly></textarea>
+    <br><br>
+
+    <!-- Input field for number and button to append and predict -->
     <label for="input-number">Enter a number (1-100):</label>
     <input type="number" id="input-number" min="1" max="100">
     <button onclick="run(); appendData();">Submit and Predict</button>
 
     <h2 id="prediction">Predicted next number: </h2>
+
+    <!-- Download updated file -->
+    <a id="download-link" style="display:none;">Download updated rand.txt</a>
 </body>
 </html>
 
