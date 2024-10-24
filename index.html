@@ -9,12 +9,12 @@
 	<title>PyScript Demo</title>
 </head>
 <body>
+    <py-config>
+        [[fetch]]
+        from = 'https://gamesbykk.github.io/PredictRandom/rand.txt'
+    </py-config>
 	<py-script>
-		from js import fetch
-		async def getdata():
-			data = await fetch("https://gamesbykk.github.io/PredictRandom/rand.txt").text().split('\n')
-			return data
-		data=getdata()
+
 		print(data)
 		import math
 		def isclose(x,y):
@@ -28,6 +28,33 @@
 				for j in range(9):
 					if isclose(data[i-j],data[-(j+1)]):
 						probs[data[i+1]]+=1
+						if data[i-1]==data[-1]:
+							probs[data[i+1]]+=2
+					else:
+						break
+			return max(probs, key=probs.get)
+		f = open("rand.txt", "r")
+        data = f.read().split('\n')
+        for i in range(len(data)):
+            data[i]=int(data[i])
+		def run():
+			while True:
+
+				# Setup the model, data, loss function and optimizer
+				# Train the model
+				prediction = predict(data)
+				inps = input("Enter a number 1-100:")
+				print(f'Predicted next number: {prediction:.4f}')
+				f = open("rand.txt", "a")
+
+				f.write('\n')
+				f.write(inps)
+				f.close() 
+				data.append(int(inps))
+		run()
+	</py-script>
+</body>
+</html>
 						if data[i-1]==data[-1]:
 							probs[data[i+1]]+=2
 					else:
