@@ -32,7 +32,7 @@ st.write("This app predicts the next number based on patterns in the existing da
 # Input number
 inps = st.number_input("Enter a number (1-100):", min_value=1, max_value=100, step=1)
 
-if st.button("Predict Next Number"):
+if st.button("What the program thought you would say"):
     prediction = predict(data)
     st.write(f'Predicted next number: {prediction:.4f}')
     
