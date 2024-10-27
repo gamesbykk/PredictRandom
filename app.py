@@ -7,7 +7,7 @@ def isclose(x, y):
             return True
 
 def predict(data):
-    probs = dict(zip(list(range(100)), [0 for _ in range(100)]))
+    probs = dict(zip(list(range(101)), [0 for _ in range(101)]))
     for i in range(10, len(data) - 1):
         for j in range(9):
             if isclose(data[i - j], data[-(j + 1)]):
